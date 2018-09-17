@@ -1,0 +1,68 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <assert.h>
+#include <stdlib.h>
+
+
+
+
+#include <Urlmon.h>
+
+
+
+
+void download_base()
+{
+	char *base_url = "http://chanyouji.com/?page=";
+	char *base_file = "c:\\TRIP\\base\\";
+	char url[256] = "";
+	char file[128] = "";
+	for (int i=1;i<=340;i++)
+	{
+		sprintf(url,"%s%d",base_url,i);
+		sprintf(file,"%s%d.html",base_file,i);
+		if (URLDownloadToFile(NULL,(LPCWSTR)url,(LPCWSTR)file,0,NULL) == S_OK)
+		{
+			printf("%s\n",url);
+		}
+	}
+}
+
+void download_link()
+{
+	char *base_file = "c:\\TRIP\\base\\1.html";
+	FILE *fr = fopen(base_file, "r");
+	assert(fr != NULL);
+
+	fseek(fr,0,SEEK_END);
+	int file_size = ftell(fr);
+	fseek(fr,0,SEEK_SET);
+	char *buff = (char*)calloc(sizeof(char), file_size + 1024);
+	fread(buff,sizeof(char),file_size,fr);
+	fclose(fr);
+	
+	char *p;
+	p = strstr(buff, "&#47;trips&#47;");
+	p += 15;
+	
+	char url[256] = "http://chanyouji.com/trips/";
+
+	strncat(url,p,6);
+	///########################url 
+	char *file = "c:\\TRIP\\link\\222.html";
+	
+	//sprintf(file,"%s%s.html",link_file,file);
+	//printf("%s\n",file);
+	//printf("%s\n",url);
+	if (URLDownloadToFile(NULL,(LPCWSTR)url,(LPCWSTR)file,0,NULL) == S_OK)
+	{
+		printf("%s\n",url);
+	}
+}
+int main()
+{
+	//download_base();
+	download_link();
+	return 0;
+}
+
